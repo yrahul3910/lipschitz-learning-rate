@@ -316,13 +316,13 @@ For multi-class classification, the experiments were conducted in the same manne
         \midrule
         Iris & 1.936 & 93.33\% & 97.78\% \\
         Digits & 0.635 & 91.3\% & 94.63\% \\
-        MNIST^* & 10.24 & 92.59\% & 92.33\% \\
+        MNIST\footnotemark & 10.24 & 92.59\% & 92.33\% \\
         \bottomrule
     \end{tabularx}
     \label{tab:classif:2}
 \end{table}
 
-For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first.
+\footnotetext{For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first.}
 
 \begin{itemize}
     \item for classification, also perform experiments like regression
@@ -334,7 +334,7 @@ For MNIST, we handled the data differently. Because running gradient descent cau
 \section{Conclusion and Future Work}
 Our major contribution in this paper is the presentation of a novel framework for automatically choosing a suitable learning rate in gradient descent. We then derived the formulas for some common loss functions. This is equally applicable, of course, to both batch and stochastic gradient descent. Our experiments confirmed that our choice of learning rate indeed leads to significantly faster convergence, as predicted by the theory.
 
-Future work in this direction is two-fold. First, we need to investigate the utility of a similar approach in the Broyden–Fletcher–Goldfarb–Shanno (BFGS)\cite{broyden1970convergence}\cite{fletcher1970new}\cite{goldfarb1970family}\cite{shanno1970conditioning} optimization algorithm, which relies on approximating the Hessian matrix. In BFGS, a suitable step size is chosen via line search; however, this is computationally expensive. Identifying a more direct approach to this would be considerably beneficial.
+Future work in this direction is two-fold. First, we need to investigate the utility of a similar approach in the Broyden–Fletcher–Goldfarb–Shanno (BFGS)\cite{broyden1970convergence}\cite{fletcher1970new}\cite{goldfarb1970family}\cite{shanno1970conditioning} optimization algorithm, which uses an approximation of the Hessian matrix. In BFGS, a suitable step size is chosen via line search; however, this is computationally expensive. Identifying a more direct approach to this would be considerably beneficial.
 
 Second, this work discussed, in section \ref{regexpts}, a set of equations for computing an approximation to $K$. In our experiments, the approximation was quite close to the value of $\left\Vert \textbf{w} \right\Vert$ obtained after running gradient descent. In applications where time and/or resources are limited, an approximation to the weight vector may be sufficient. Mathematically, the equation $\left\Vert \textbf{w} \right\Vert = K$ represents an n-ball. Therefore, it may suffice to only search the surface of this n-ball, rather than the entire n-dimensional space via gradient descent. The optimization objective, therefore, is
 \[
