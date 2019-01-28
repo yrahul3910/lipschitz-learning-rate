@@ -6,7 +6,6 @@
 \usepackage{booktabs}
 \usepackage{tabularx}
 \usepackage{graphicx}
-\usepackage[labelfont=bf]{caption}
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \renewcommand{\arraystretch}{1.3}
 
@@ -66,7 +65,7 @@ Thus, $\sup\limits_{\textbf{v}} \left\Vert \nabla_{\textbf{w}} f(\textbf{v}) \ri
 \[
     L \leq \sup\limits_{\textbf{v}} \left\Vert \nabla_{\textbf{w}} f(\textbf{v}) \right\Vert
 \]
-In this paper, we use $\max |\nabla_{\textbf{w}} f|$ to derive the Lipschitz constants. Our approach makes the minimal assumption that the functions are Lipschitz continuous and differentiable. Because the gradient of these loss functions is used in gradient descent, these conditions are guaranteed to be satisfied.
+In this paper, we use $\max |\nabla_{\textbf{w}} f|$ to derive the Lipschitz constants. Our approach makes the minimal assumption that the functions are Lipschitz continuous and differentiable up to first order only \footnote{Note this is a weaker condition than assuming the gradient of the function being Lipschitz continuous. We exploit merely the boundedness of the gradient.}. Because the gradient of these loss functions is used in gradient descent, these conditions are guaranteed to be satisfied.
 
 By setting $\alpha = \frac{1}{L}$, we have $\Delta \textbf{w} \leq 1$, constraining the change in the weights. This makes it optimal to set the learning rate to the reciprocal of the Lipschitz constant. The following sections show the derivation for the Lipschitz constants for various loss functions. Note that the derived constants are in terms of the data, which is a constant with respect to the weight vector. 
 
@@ -135,7 +134,7 @@ and so we can set the Lipschitz constant to
 \section{Binary cross-entropy function}
 We have,
 \[
-    g(\textbf{w}) &= \frac{1}{m}\sum\limits_{i=1}^m -y^{(i)}\log \left( \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) - (1-y^{(i)})\log \left( 1 - \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) 
+    g(\textbf{w}) = \frac{1}{m}\sum\limits_{i=1}^m -y^{(i)}\log \left( \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) - (1-y^{(i)})\log \left( 1 - \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) 
 \]
 The gradient is then,
 \[
@@ -242,7 +241,7 @@ This additional term may be added to the Lipschitz constants derived above when 
 \section{Experiments}
 This section discusses experiments demonstrating the faster convergence with our approach. 
 
-In each experiment, we randomly initialize weights, and use the same initial weight vector for gradient descent with both the learning rates. In all experiments, we scale each feature to [0, 1] before running gradient descent. This scale data is used to compute the Lipschitz constants, and consequently, the learning rates. Normalizing the data is particularly important because the Lipschitz constant may get arbitrarily large, thus making the learning rate too small. For the results obtained with a constant learning rate, the chosen value of $\alpha$ was 0.1.
+In each experiment, we randomly initialize weights, and use the same initial weight vector for gradient descent with both the learning rates. In all experiments, we scale each feature to sum to 1 before running gradient descent. This scaled data is used to compute the Lipschitz constants, and consequently, the learning rates. Normalizing the data is particularly important because the Lipschitz constant may get arbitrarily large, thus making the learning rate too small.
 
 \begin{figure}
     \centering
@@ -251,7 +250,7 @@ In each experiment, we randomly initialize weights, and use the same initial wei
     \label{fig:leastsq:1}
 \end{figure}
 
-\subsection{Regression experiments}
+\subsection{Regression experiments} \label{regexpts}
 Rather than wait for absolute convergence, which may take many iterations, we instead choose to set a threshold for the value of the loss function. When the value of the cost function goes below this threshold, we stop the gradient descent procedure. A reasonable threshold value is chosen for each dataset separately.
 
 For the least-squares cost function, an estimate of $K$ is required. A good estimate of $K$ would be obtained by running gradient descent with some fixed learning rate and then taking the norm of the final weight vectors. However, because this requires actually running the algorithm for which we want to find a parameter first, we need to estimate this value instead. In our experiments, we obtain a close approximation to the value obtained above through the formula below. For the experiments in this subsection, we use this formula to compute $K$.
@@ -283,7 +282,7 @@ In the above formulas, the notation $x^{(i)}_j$ refers to the $j$th column of th
 
 Table \ref{tab:leastsq:1} shows the results of our experiments on some datasets. Clearly, our choice of $\alpha$ outperforms a random guess in all the datasets. Our proposed method yields a learning rate that adapts to each dataset to converge significantly faster than with a guess. In some datasets, our choice of learning rate gives over a 100x improvement in training time.
 
-While the high learning rates may raise concerns of oscillations rather than convergence, we have checked for this in our experiments. To do this, we continued running gradient descent, monitoring the value of the loss function every 500 iterations. Figure \ref{fig:leastsq:1} shows this plot, demonstrating that the high learning rates do lead to convergence.
+While the high learning rates may raise concerns of oscillations rather than convergence, we have checked for this in our experiments. To do this, we continued running gradient descent, monitoring the value of the loss function every 500 iterations. Figure \ref{fig:leastsq:1} shows this plot, demonstrating that the high learning rates indeed lead to convergence.
 
 \subsection{Binary classification experiments}
 For classification, our experiments were conducted by running gradient descent for 1000 iterations, and then comparing accuracy scores over the two learning rates. Table \ref{tab:classif:1} summarizes the results of these experiments. Note that even with high learning rates, the algorithm outperforms a small choice of learning rate.
@@ -317,21 +316,37 @@ For multi-class classification, the experiments were conducted in the same manne
         \midrule
         Iris & 1.936 & 93.33\% & 97.78\% \\
         Digits & 0.635 & 91.3\% & 94.63\% \\
-        MNIST^* & 0.036 & 67.02\% & 67.02\% \\
+        MNIST^* & 10.24 & 92.59\% & 92.33\% \\
         \bottomrule
     \end{tabularx}
     \label{tab:classif:2}
 \end{table}
 
-For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first. However, we observed a major difference between train and test accuracies, indicating overfitting. Thus, we added a regularization term, with $\lambda=10$. To compute the Lipschitz constant, we proceeded as in section \ref{regularization}, but adding $\lambda \cdot \log c$ instead of $\lambda \cdot c$, since the log loss is used.
+For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first.
 
 \begin{itemize}
-    \item format wants line after the table heading
-    \item try MNIST with different scalers.
     \item for classification, also perform experiments like regression
-    \item SVM analogy
-    \item replace line search in BFGS with our approach
+    \item check if this softmax derivation applies to one-hot encoding as well
+    \item Try not fixing no. of iterations--let LC do the trick!
+    \item set MSE threshold and compare no.of iterations--I need much better accuracy
 \end{itemize}
+
+\section{Conclusion and Future Work}
+Our major contribution in this paper is the presentation of a novel framework for automatically choosing a suitable learning rate in gradient descent. We then derived the formulas for some common loss functions. This is equally applicable, of course, to both batch and stochastic gradient descent. Our experiments confirmed that our choice of learning rate indeed leads to significantly faster convergence, as predicted by the theory.
+
+Future work in this direction is two-fold. First, we need to investigate the utility of a similar approach in the Broyden–Fletcher–Goldfarb–Shanno (BFGS)\cite{broyden1970convergence}\cite{fletcher1970new}\cite{goldfarb1970family}\cite{shanno1970conditioning} optimization algorithm, which relies on approximating the Hessian matrix. In BFGS, a suitable step size is chosen via line search; however, this is computationally expensive. Identifying a more direct approach to this would be considerably beneficial.
+
+Second, this work discussed, in section \ref{regexpts}, a set of equations for computing an approximation to $K$. In our experiments, the approximation was quite close to the value of $\left\Vert \textbf{w} \right\Vert$ obtained after running gradient descent. In applications where time and/or resources are limited, an approximation to the weight vector may be sufficient. Mathematically, the equation $\left\Vert \textbf{w} \right\Vert = K$ represents an n-ball. Therefore, it may suffice to only search the surface of this n-ball, rather than the entire n-dimensional space via gradient descent. The optimization objective, therefore, is
+\[
+    \begin{aligned}
+        \min\limits_{\textbf{w}} & J(\textbf{w}) \\
+        \text{s.t. } & \left\Vert \textbf{w} \right\Vert = K 
+    \end{aligned}
+\]
+where $J$ is some loss function. Although our constraint is non-convex, this is similar to the optimization problem in Support Vector Machines (SVMs), and future work could investigate possible approaches to solving this optimization problem.
+
+Alternatively, the surface of the n-ball could be used to initialize weights--rather than initialize the weight vector randomly in the entire n-space, one could initialize the weights at a random point on the n-ball.
+
 \bibliographystyle{plain}
 \bibliography{cite}
 \end{document}
