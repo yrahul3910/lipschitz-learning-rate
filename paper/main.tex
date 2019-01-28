@@ -205,7 +205,7 @@ In the limiting case, all the softmax values are equal, and $y^{(i)} = p$; for $
 \end{equation}
 Using \eqref{softmax:3} in \eqref{softmax:2}, we get
 \[
-    \nabla_{\boldsymbol\Theta_p} g \leq \frac{k-1}{km} \sum\limits_{i=1}^m \textbf{x}^{(i)}
+    |\nabla_{\boldsymbol\Theta_p} g| \leq \frac{k-1}{km} \sum\limits_{i=1}^m \textbf{x}^{(i)}
 \]
 and thus we obtain the Lipschitz constant for the softmax loss function:
 
@@ -215,7 +215,7 @@ and thus we obtain the Lipschitz constant for the softmax loss function:
     }
 \]
 
-\section{A note on regularization}
+\section{A note on regularization} \label{regularization}
 It should be noted that this framework is extensible to the case where the loss function includes a regularization term. 
 
 In particular, if an $L_2$ regularization term, $\frac{\lambda}{2}\left\Vert \textbf{w} \right\Vert_2^2$ is added, it is trivial to show that the Lipschitz constant increases by $\lambda K$, where $K$ is the upper bound for $\left\Vert \textbf{w} \right\Vert$. More generally, if a Tikhonov regularization term, $\left\Vert \boldsymbol\Gamma \textbf{w} \right\Vert_2^2$ term is added, then the increase in the Lipschitz constant can be computed in the same way as shown in the alternate derivation for the least-squares loss above. For the sake of continuity, we show a succinct version of the derivation below:
@@ -243,6 +243,13 @@ This additional term may be added to the Lipschitz constants derived above when 
 This section discusses experiments demonstrating the faster convergence with our approach. 
 
 In each experiment, we randomly initialize weights, and use the same initial weight vector for gradient descent with both the learning rates. In all experiments, we scale each feature to [0, 1] before running gradient descent. This scale data is used to compute the Lipschitz constants, and consequently, the learning rates. Normalizing the data is particularly important because the Lipschitz constant may get arbitrarily large, thus making the learning rate too small. For the results obtained with a constant learning rate, the chosen value of $\alpha$ was 0.1.
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{cali.png}
+    \caption{Loss function over iterations for California housing prices dataset}
+    \label{fig:leastsq:1}
+\end{figure}
 
 \subsection{Regression experiments}
 Rather than wait for absolute convergence, which may take many iterations, we instead choose to set a threshold for the value of the loss function. When the value of the cost function goes below this threshold, we stop the gradient descent procedure. A reasonable threshold value is chosen for each dataset separately.
@@ -278,39 +285,52 @@ Table \ref{tab:leastsq:1} shows the results of our experiments on some datasets.
 
 While the high learning rates may raise concerns of oscillations rather than convergence, we have checked for this in our experiments. To do this, we continued running gradient descent, monitoring the value of the loss function every 500 iterations. Figure \ref{fig:leastsq:1} shows this plot, demonstrating that the high learning rates do lead to convergence.
 
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.5]{cali.png}
-    \caption{Loss function over iterations for California housing prices dataset}
-    \label{fig:leastsq:1}
-\end{figure}
-
 \subsection{Binary classification experiments}
-For classification, our experiments were conducted by running gradient descent for a fixed number of iterations, and then comparing various classification metrics over the two learning rates. Table \ref{tab:classif:1} summarizes the results of these experiments.
+For classification, our experiments were conducted by running gradient descent for 1000 iterations, and then comparing accuracy scores over the two learning rates. Table \ref{tab:classif:1} summarizes the results of these experiments. Note that even with high learning rates, the algorithm outperforms a small choice of learning rate.
+
+For the iris dataset, we removed one class to make the problem a binary classification one. For the covertype data, we considered only the first two out of seven classes. This resulted in 495,141 rows. We also considered only ten features to speed up computation time.
 
 \begin{table}
     \caption{Binary classification experiments on various datasets with $\alpha=0.1$ and $\alpha=\frac{1}{L}$}
     \centering
-    \begin{tabularx}{\textwidth}{cYYYY}
+    \begin{tabularx}{\textwidth}{cYYY}
         \toprule
-        Dataset & \# iterations & Inverse Lipschitz constant & Cost with $\alpha=0.1$ & Cost with $\alpha=\frac{1}{L}$ \\
+        Dataset & Inverse Lipschitz constant & Accuracy with $\alpha=0.1$ & Accuracy with $\alpha=\frac{1}{L}$ \\
         \midrule
-        Iris & 1,000 & 70.54 & 0.6928 & 0.284 \\
-        Covertype & 1,000 & 42,021.68 & 0.69315 & 0.6905 \\
+        Iris & 830.22 & 50\% & 100\% \\
+        Covertype & 189.35M & 43.05\% & 57.21\% \\
+        Breast cancer & 4280.22 & 43.23\% & 90.5\% \\
         \bottomrule
     \end{tabularx}
     \label{tab:classif:1}
 \end{table}
 
 \subsection{Multi-class classification experiments}
-For multi-class classification, we used the \textit{SGDClassifier} class from sklearn\cite{scikit-learn}, which has parameters to set the learning rate, number of iterations, and loss function, among several others. We used the log loss, restricted the algorithm to use only 1 CPU core, did not use regularization, and disabled shuffling of the data after each epoch. The experiments were performed with two separate instances of the class initialized with the same parameters except the learning rate. The data was split into 70\% for training and 30\% for testing, and the mean accuracy over the test set was compared. 
+For multi-class classification, the experiments were conducted in the same manner as for binary classification. However, we did not scale the data in this case. Further, the target variable was one-hot encoded before running gradient descent. Finally, we ran gradient descent for 200 iterations, rather than 1000. Table \ref{tab:classif:2} summarizes the results of these experiments.
+
+\begin{table}
+    \caption{Softmax classification experiments on various datasets with $\alpha=0.1$ and $\alpha=\frac{1}{L}$}
+    \centering
+    \begin{tabularx}{\textwidth}{cYYY}
+        \toprule
+        Dataset & Inverse Lipschitz constant & Accuracy with $\alpha=0.1$ & Accuracy with $\alpha=\frac{1}{L}$ \\
+        \midrule
+        Iris & 1.936 & 93.33\% & 97.78\% \\
+        Digits & 0.635 & 91.3\% & 94.63\% \\
+        MNIST^* & 0.036 & 67.02\% & 67.02\% \\
+        \bottomrule
+    \end{tabularx}
+    \label{tab:classif:2}
+\end{table}
+
+For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first. However, we observed a major difference between train and test accuracies, indicating overfitting. Thus, we added a regularization term, with $\lambda=10$. To compute the Lipschitz constant, we proceeded as in section \ref{regularization}, but adding $\lambda \cdot \log c$ instead of $\lambda \cdot c$, since the log loss is used.
 
 \begin{itemize}
-    \item binary loss (logistic reg): census income
     \item format wants line after the table heading
-    \item don't set threshold...run for certain iterations..capture MSE comparison every 100 iterations, may be
-    \item CI of regression coefficients
+    \item try MNIST with different scalers.
+    \item for classification, also perform experiments like regression
     \item SVM analogy
+    \item replace line search in BFGS with our approach
 \end{itemize}
 \bibliographystyle{plain}
 \bibliography{cite}
