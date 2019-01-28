@@ -14,7 +14,7 @@
 
 \title{Role of Lipschitz constant in Gradient Learning}
 
-\iffalse
+%\iffalse
     \author{
         Snehanshu Saha\\
         Department of Computer Science\\
@@ -28,9 +28,9 @@
         Bengaluru, KA-560100 \\
         \texttt{y.rahul@outlook.com}
     }
-\fi
+%\fi
 
-\author{Snehanshu Saha and Rahul Yedida}
+%\author{Snehanshu Saha and Rahul Yedida}
 %\date{}
 
 \begin{document}
@@ -87,7 +87,6 @@ Thus,
 The penultimate step is obtained by observing that $(\textbf{w}+\textbf{v})^T \textbf{x}^{(i)T}$ is a real number, whose transpose is itself.
 
 At this point, we take the norm on both sides, and then assume that $\textbf{w}$ and $\textbf{v}$ are bounded such that $\left\Vert \textbf{w} \right\Vert, \left\Vert \textbf{v} \right\Vert \leq K$. Taking norm on both sides,
-
 \[
     \boxed{
         \frac{\left\Vert g(\textbf{w}) - g(\textbf{v}) \right\Vert}{\left\Vert \textbf{w} - \textbf{v} \right\Vert} \leq \frac{K}{m}\left\Vert \textbf{X}^T\textbf{X} \right\Vert - \frac{1}{m} \left\Vert\textbf{y}^T \textbf{X} \right\Vert
@@ -102,7 +101,6 @@ The least-squares system can also be formulated as
     \begin{aligned} L(\textbf{w}) &= \left\Vert \textbf{X}\textbf{w} - \textbf{y} \right\Vert \\ &= (\textbf{X}\textbf{w} - \textbf{y})^T (\textbf{X}\textbf{w} - \textbf{y}) \end{aligned}
 \]
 Then, we have
-
 \[
     \begin{aligned}
 			L(\textbf{b}) - L(\textbf{a}) &= (X\textbf{b} - Y)^T (X\textbf{b} - Y) - (X\textbf{a} - Y)^T (X\textbf{a} - Y) \\
@@ -121,49 +119,36 @@ Then, we have
 		\end{aligned}
 \]
 The triangle inequality now gives us,
-
 \[
     L(\textbf{b}) - L(\textbf{a}) \leq \left( 2 \left\Vert \textbf{a} \right\Vert \left\Vert X^T X \right\Vert - 2\left\Vert Y^T X \right\Vert + \left\Vert \textbf{b} - \textbf{a} \right\Vert \left\Vert X^T X \right\Vert \right)\left\Vert \textbf{b} - \textbf{a} \right\Vert
 \]
 Assuming $\left\Vert \textbf{a} \right\Vert, \left\Vert \textbf{b} \right\Vert \leq K$,
-
 \[
     L(\textbf{b}) - L(\textbf{a}) \leq \left( 2K \left\Vert X^T X \right\Vert - 2 \left\Vert Y^T X \right\Vert \right) \left\Vert \textbf{b} - \textbf{a} \right\Vert
 \]
 and so we can set the Lipschitz constant to
-
 \[
     \boxed{
         L = 2K \left\Vert X^T X \right\Vert - 2 \left\Vert Y^T X \right\Vert
     }
 \]
-
-\section{Binary cross-entropy function} \label{bin_xent}
+\section{Binary cross-entropy function}
 We have,
 \[
-    \begin{aligned}
-        g(\textbf{w}) &= \frac{1}{m}\sum\limits_{i=1}^m -y^{(i)}\log \left( \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) - (1-y^{(i)})\log \left( 1 - \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) \\
-        &= \frac{1}{m}\sum\limits_{i=1}^m y^{(i)}\log \left( 1+e^{-\textbf{w}^T \textbf{x}^{(i)}} \right) - (1-y^{(i)})\log \left( e^{-\textbf{w}^T \textbf{x}^{(i)}} \right) + (1-y^{(i)}) \log \left( 1+e^{-\textbf{w}^T \textbf{x}^{(i)}} \right) \\
-        &= \frac{1}{m}\sum\limits_{i=1}^m - (1-y^{(i)})\log \left( e^{-\textbf{w}^T \textbf{x}^{(i)}} \right) + \log \left( 1+e^{-\textbf{w}^T \textbf{x}^{(i)}} \right)
-    \end{aligned}
+    g(\textbf{w}) &= \frac{1}{m}\sum\limits_{i=1}^m -y^{(i)}\log \left( \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) - (1-y^{(i)})\log \left( 1 - \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) 
 \]
 The gradient is then,
 \[
-    \begin{aligned}
-        \nabla_{\textbf{w}} g &= \frac{1}{m}\sum\limits_{i=1}^m -\frac{1-y^{(i)}}{e^{-\textbf{w}^T \textbf{x}^{(i)}}}\cdot e^{-\textbf{w}^T \textbf{x}^{(i)}} \cdot (-\textbf{x}^{(i)}) + \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}}\cdot e^{-\textbf{w}^T \textbf{x}^{(i)}} \cdot (-\textbf{x}^{(i)}) \\
-        &= \frac{1}{m}\sum\limits_{i=1}^m (1-y^{(i)})\textbf{x}^{(i)} - \sigma\left( \textbf{w}^T \textbf{x}^{(i)}\right) \textbf{x}^{(i)} \\
-        &\leq \frac{1}{m}\sum\limits_{i=1}^m (1-y^{(i)})\textbf{x}^{(i)} - \textbf{x}^{(i)} \\
-        &= \frac{1}{m}\sum\limits_{i=1}^m -y^{(i)}\textbf{x}^{(i)}
-    \end{aligned}
+    \begin{aligned} \frac{\partial}{\partial \textbf{w}_j} g(\textbf{w}) &= \frac{\partial}{\partial \textbf{w}_j} \left( \frac{-1}{m} \sum_{i = 1}^m y^{(i)} \log \left( h(\textbf{x}^{(i)}) \right) + (1 - y^{(i)}) \log \left( 1 - h(\textbf{x}^{(i)}) \right) \right) \\ &= \frac{-1}{m} \sum_{i = 1}^m \left( \frac{y^{(i)}}{h(\textbf{x}^{(i)})}h^{\prime}(\textbf{x}^{(i)}) + \frac{1 - y^{(i)}}{1 - h(\textbf{x}^{(i)})}(-h^{\prime}(\textbf{x}^{(i)})) \right) \\ &= \frac{-1}{m} \sum_{i = 1}^m \left( \frac{y^{(i)}}{h(\textbf{x}^{(i)})} h(\textbf{x}^{(i)})(1 - h(\textbf{x}^{(i)}))(\textbf{x}^{(i)}_j) - \frac{1 - y^{(i)}}{1 - h(\textbf{x}^{(i)})}h(\textbf{x}^{(i)})(1 - h(\textbf{x}^{(i)}))(x^{(i)}_j) \right) \\ &= \frac{-1}{m} \sum_{i = 1}^m \left( y^{(i)}(1 - h(\textbf{x}^{(i)}))(\textbf{x}^{(i)}_j) - (1 - y^{(i)})h(\textbf{x}^{(i)})(x^{(i)}_j) \right) \\ &= \frac{-1}{m} \sum_{i = 1}^m \left( y^{(i)}(1 - h(\textbf{x}^{(i)})) - (1 - y^{(i)})h(\textbf{x}^{(i)}) \right)x^{(i)}_j \\ &= \frac{1}{m} \sum_{i = 1}^m \left( y^{(i)} - y^{(i)}h(\textbf{x}^{(i)}) - h(\textbf{x}^{(i)}) + y^{(i)}h(\textbf{x}^{(i)}) \right)x^{(i)}_j \\ &= \frac{1}{m} \sum_{i = 1}^m \left( h(\textbf{x}^{(i)}) - y^{(i)} \right)x^{(i)}_j \end{aligned}
 \]
+where $h(\textbf{x}^{(i)}) = \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}}$. It is trivial to show that the maximum of this occurs when $h(\textbf{x}^{(i)})=\frac{1}{2}$.
+
 Thus, the Lipschitz constant is
- 
 \[
     \boxed{
-        L = \frac{1}{m} \left\Vert \textbf{y}^T \textbf{X} \right\Vert
+        L = \frac{1}{2m} \left\Vert \textbf{X} \right\Vert
     }
 \]
-
 \iffalse
     Remark:
     \begin{itemize}
@@ -183,13 +168,12 @@ Thus, the Lipschitz constant is
     \end{itemize}
 \fi
 
-\section{Softmax loss function} \label{softmax}
+\section{Softmax loss function} 
 The softmax loss is defined as
 \[
     g(\textbf{w}) = -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k [y^{(i)}=j] \log \left( \frac{e^{\boldsymbol\Theta_j^T \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta_l^T \textbf{x}^{(i)}}} \right)
 \]
 Here, we are using the Iverson notation: the expression $[y^{(i)}=j]$ is 1 if the condition is true, and 0 otherwise. To find the Lipschitz constant, we require the derivative of the softmax function, which is the fraction in the log term.
-
 \[
     \begin{aligned} \frac{\partial}{\partial \boldsymbol\Theta_p} \left( \frac{e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \right) &= \frac{\partial}{\partial \boldsymbol\Theta^T_p \textbf{x}^{(i)}} \left( \frac{e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \right) \cdot \frac{\partial}{\partial \boldsymbol\Theta_p} \left( \boldsymbol\Theta^T_p \textbf{x}^{(i)} \right) \\ &= \frac{\frac{\partial}{\partial \boldsymbol\Theta^T_p \textbf{x}^{(i)}} \left( e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}} \right) \sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} - e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}} \frac{\partial}{\partial \boldsymbol\Theta^T_p \textbf{x}^{(i)}} \left( \sum_{l=1}^k e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}\right )}{\left( \sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} \right)^2}  \frac{\partial}{\partial \boldsymbol\Theta^T_p} \left( \boldsymbol\Theta_p^T \textbf{x}^{(i)} \right) \\ &= \frac{[p=j] e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} - e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}} \cdot e^{\boldsymbol\Theta^T_p \textbf{x}^{(i)}} }{\left( \sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} \right)^2} \cdot \textbf{x}^{(i)} \\ &= \left( \frac{[p=j] e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} - \frac{e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \cdot \frac{e^{\boldsymbol\Theta^T_p \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \right) \cdot \textbf{x}^{(i)} \\ &= \left([p=j] s_j - s_j s_p \right) \cdot \textbf{x}^{(i)} \\ &= s_j([p=j]-s_p)\textbf{x}^{(i)} \end{aligned}
 \]
@@ -198,7 +182,6 @@ The first step uses the chain rule for derivatives. The second step applies the 
     \frac{\partial}{\partial \boldsymbol\Theta_p} s_j = s_j([p=j]-s_p)\textbf{x}^{(i)} \label{softmax:1}
 \end{equation}
 We can now use \eqref{softmax:1} to find the gradient of $g$.
-
 \[
     \begin{aligned}
         \nabla_{\boldsymbol\Theta_p} g &= -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k \nabla_{\boldsymbol\Theta_p} [y^{(i)}=j]\log s_j \\
@@ -212,13 +195,13 @@ We can now use \eqref{softmax:1} to find the gradient of $g$.
 \]
 Thus,
 \begin{equation}
-    \nabla_{\boldsymbol\Theta_p} g = \frac{1}{m} \sum\limits_{i=1}^m \textbf{x}^{(i)} \left( [y^{(i)}=p] - s_p \right) \label{softmax:2}
+    \nabla_{\boldsymbol\Theta_p} g = \frac{1}{m} \sum\limits_{i=1}^m \textbf{x}^{(i)} \left(s_p - [y^{(i)}=p] \right) \label{softmax:2}
 \end{equation}
 
-In the limiting case, all the softmax values are equal, and $y^{(i)} = p$; for $k$ classes, $s_p = \frac{1}{k}$, yielding $1-s_p = \frac{k-1}{k}$ so we get the inequality
+In the limiting case, all the softmax values are equal, and $y^{(i)} = p$; for $k$ classes, $s_p = \frac{1}{k}$, yielding $|s_p-1| = \frac{k-1}{k}$ so we get the inequality
 
 \begin{equation}
-    [y^{(i)} = p](1-s_p) \leq \frac{k-1}{k} \label{softmax:3}
+    |[y^{(i)} = p](s_p-1)| \leq \frac{k-1}{k} \label{softmax:3}
 \end{equation}
 Using \eqref{softmax:3} in \eqref{softmax:2}, we get
 \[
@@ -259,7 +242,7 @@ This additional term may be added to the Lipschitz constants derived above when 
 \section{Experiments}
 This section discusses experiments demonstrating the faster convergence with our approach. 
 
-In each experiment, we randomly initialize weights, and use the same initial weight vector for gradient descent with both the learning rates. In all experiments, we normalize the data before running gradient descent. This normalized data is used to compute the Lipschitz constants, and consequently, the learning rates. Normalizing the data is particularly important because the Lipschitz constant may get arbitrarily large, thus making the learning rate too small. For the results obtained with a constant learning rate, the chosen value of $\alpha$ was 0.1.
+In each experiment, we randomly initialize weights, and use the same initial weight vector for gradient descent with both the learning rates. In all experiments, we scale each feature to [0, 1] before running gradient descent. This scale data is used to compute the Lipschitz constants, and consequently, the learning rates. Normalizing the data is particularly important because the Lipschitz constant may get arbitrarily large, thus making the learning rate too small. For the results obtained with a constant learning rate, the chosen value of $\alpha$ was 0.1.
 
 \subsection{Regression experiments}
 Rather than wait for absolute convergence, which may take many iterations, we instead choose to set a threshold for the value of the loss function. When the value of the cost function goes below this threshold, we stop the gradient descent procedure. A reasonable threshold value is chosen for each dataset separately.
@@ -303,7 +286,7 @@ While the high learning rates may raise concerns of oscillations rather than con
 \end{figure}
 
 \subsection{Binary classification experiments}
-For classification, our experiments were conducted by running gradient descent for a fixed number of iterations, and then comparing various classification metrics over the two learning rates.
+For classification, our experiments were conducted by running gradient descent for a fixed number of iterations, and then comparing various classification metrics over the two learning rates. Table \ref{tab:classif:1} summarizes the results of these experiments.
 
 \begin{table}
     \caption{Binary classification experiments on various datasets with $\alpha=0.1$ and $\alpha=\frac{1}{L}$}
@@ -319,11 +302,12 @@ For classification, our experiments were conducted by running gradient descent f
     \label{tab:classif:1}
 \end{table}
 
+\subsection{Multi-class classification experiments}
+For multi-class classification, we used the \textit{SGDClassifier} class from sklearn\cite{scikit-learn}, which has parameters to set the learning rate, number of iterations, and loss function, among several others. We used the log loss, restricted the algorithm to use only 1 CPU core, did not use regularization, and disabled shuffling of the data after each epoch. The experiments were performed with two separate instances of the class initialized with the same parameters except the learning rate. The data was split into 70\% for training and 30\% for testing, and the mean accuracy over the test set was compared. 
+
 \begin{itemize}
     \item binary loss (logistic reg): census income
     \item format wants line after the table heading
-    \item softmax: MNIST, iris
-    \item Todo: check derivation for softmax, whether it is $\left\Vert X \right\Vert$ or $\left\Vert y^T X \right\Vert$.
     \item don't set threshold...run for certain iterations..capture MSE comparison every 100 iterations, may be
     \item CI of regression coefficients
     \item SVM analogy
