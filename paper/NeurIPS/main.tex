@@ -4,8 +4,8 @@
 \usepackage{amssymb}
 \usepackage{multirow}
 \usepackage{booktabs}
-\usepackage{tabularx}
 \usepackage{graphicx}
+\usepackage{tabularx}
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \renewcommand{\arraystretch}{1.3}
 
@@ -67,7 +67,10 @@ Thus, $\sup\limits_{\textbf{v}} \left\Vert \nabla_{\textbf{w}} f(\textbf{v}) \ri
 \]
 In this paper, we use $\max |\nabla_{\textbf{w}} f|$ to derive the Lipschitz constants. Our approach makes the minimal assumption that the functions are Lipschitz continuous and differentiable up to first order only \footnote{Note this is a weaker condition than assuming the gradient of the function being Lipschitz continuous. We exploit merely the boundedness of the gradient.}. Because the gradient of these loss functions is used in gradient descent, these conditions are guaranteed to be satisfied.
 
-By setting $\alpha = \frac{1}{L}$, we have $\Delta \textbf{w} \leq 1$, constraining the change in the weights. This makes it optimal to set the learning rate to the reciprocal of the Lipschitz constant. The following sections show the derivation for the Lipschitz constants for various loss functions. Note that the derived constants are in terms of the data, which is a constant with respect to the weight vector. 
+By setting $\alpha = \frac{1}{L}$, we have $\Delta \textbf{w} \leq 1$, constraining the change in the weights. This makes it optimal to set the learning rate to the reciprocal of the Lipschitz constant. The following sections show the derivation for the Lipschitz constants for various loss functions. The derived constants are in terms of the data, which is a constant with respect to the weight vector.
+
+% displaymath environment for unnumbered equations
+% must use \Description in figures
 
 \section{Least squares cost function} \label{lstsq}
 We have,
@@ -102,28 +105,28 @@ The least-squares system can also be formulated as
 Then, we have
 \[
     \begin{aligned}
-			L(\textbf{b}) - L(\textbf{a}) &= (X\textbf{b} - Y)^T (X\textbf{b} - Y) - (X\textbf{a} - Y)^T (X\textbf{a} - Y) \\
-			&= (\textbf{b}^T X^T - Y^T)(X\textbf{b} - Y) - (\textbf{a}^T X^T - Y^T)(X\textbf{a} - Y) \\
-			&= \textbf{b}^T X^T X \textbf{b} - \textbf{b}^T X^T Y - Y^T X\textbf{b} + Y^T Y - \textbf{a}^T X^T X\textbf{a} + \textbf{a}^T X^T Y + Y^T X\textbf{a} - Y^T Y \\
-			&= \textbf{b}^T X^T X \textbf{b} - \textbf{b}^T X^T Y - Y^T X\textbf{b} - \textbf{a}^T X^T X\textbf{a} + \textbf{a}^T X^T Y + Y^T X\textbf{a} \\
-			&= \textbf{b}^T X^T X \textbf{b} - 2Y^T X\textbf{b} - \textbf{a}^T X^T X\textbf{a} + 2Y^T X\textbf{a} \\
-			&= \textbf{b}^T X^T X \textbf{b} - \textbf{a}^T X^T X\textbf{a} - 2Y^T X(\textbf{b} - \textbf{a}) \\
-			&= (\textbf{b} - \textbf{a} + \textbf{a})^T X^T X \textbf{b} - \textbf{a}^T X^T X\textbf{a} - 2Y^T X(\textbf{b} - \textbf{a}) \\
-			&= (\textbf{b} - \textbf{a})^T X^T X \textbf{b} + \textbf{a}^T X^T X \textbf{b} - \textbf{a}^T X^T X\textbf{a} - 2Y^T X(\textbf{b} - \textbf{a}) \\
-			&= (\textbf{b} - \textbf{a})^T X^T X \textbf{b} + \textbf{a}^T X^T X (\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a}) \\
-			&= (\textbf{b} - \textbf{a})^T X^T X (\textbf{b} - \textbf{a} + \textbf{a}) + \textbf{a}^T X^T X (\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a}) \\
-			&= (\textbf{b} - \textbf{a})^T X^T X\textbf{a} + \textbf{a}^T X^T X(\textbf{b} - \textbf{a}) + (\textbf{b} - \textbf{a})^T X^T X(\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a}) \\
-			&= \textbf{a}^T X^T X (\textbf{b} - \textbf{a}) + \textbf{a}^T X^T X(\textbf{b} - \textbf{a}) + (\textbf{b} - \textbf{a})^T X^T X(\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a}) \\
-			&= 2\textbf{a}^T X^T X(\textbf{b} - \textbf{a}) + (\textbf{b} - \textbf{a})^T X^T X(\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a})
+			L(\textbf{b}) - L(\textbf{a}) =& \left( X\textbf{b} - Y \right)^T (X\textbf{b} - Y) - (X\textbf{a} - Y)^T (X\textbf{a} - Y) \\
+			=& (\textbf{b}^T X^T - Y^T)(X\textbf{b} - Y) - (\textbf{a}^T X^T - Y^T)(X\textbf{a} - Y) \\
+			=& \textbf{b}^T X^T X \textbf{b} - \textbf{b}^T X^T Y - Y^T X\textbf{b} + Y^T Y - \textbf{a}^T X^T X\textbf{a} + \textbf{a}^T X^T Y + Y^T X\textbf{a} - Y^T Y \\
+			=& \textbf{b}^T X^T X \textbf{b} - \textbf{b}^T X^T Y - Y^T X\textbf{b} - \textbf{a}^T X^T X\textbf{a} + \textbf{a}^T X^T Y + Y^T X\textbf{a} \\
+			=& \textbf{b}^T X^T X \textbf{b} - 2Y^T X\textbf{b} - \textbf{a}^T X^T X\textbf{a} + 2Y^T X\textbf{a} \\
+			=& \textbf{b}^T X^T X \textbf{b} - \textbf{a}^T X^T X\textbf{a} - 2Y^T X(\textbf{b} - \textbf{a}) \\
+			=& (\textbf{b} - \textbf{a} + \textbf{a})^T X^T X \textbf{b} - \textbf{a}^T X^T X\textbf{a} - 2Y^T X(\textbf{b} - \textbf{a}) \\
+			=& (\textbf{b} - \textbf{a})^T X^T X \textbf{b} + \textbf{a}^T X^T X \textbf{b} - \textbf{a}^T X^T X\textbf{a} - 2Y^T X(\textbf{b} - \textbf{a}) \\
+			=& (\textbf{b} - \textbf{a})^T X^T X \textbf{b} + \textbf{a}^T X^T X (\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a}) \\
+			=& (\textbf{b} - \textbf{a})^T X^T X (\textbf{b} - \textbf{a} + \textbf{a}) + \textbf{a}^T X^T X (\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a}) \\
+			=& (\textbf{b} - \textbf{a})^T X^T X\textbf{a} + \textbf{a}^T X^T X(\textbf{b} - \textbf{a}) + (\textbf{b} - \textbf{a})^T X^T X(\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a}) \\
+			=& \textbf{a}^T X^T X (\textbf{b} - \textbf{a}) + \textbf{a}^T X^T X(\textbf{b} - \textbf{a}) + (\textbf{b} - \textbf{a})^T X^T X(\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a}) \\
+			=& 2\textbf{a}^T X^T X(\textbf{b} - \textbf{a}) + (\textbf{b} - \textbf{a})^T X^T X(\textbf{b} - \textbf{a}) - 2Y^T X(\textbf{b} - \textbf{a})
 		\end{aligned}
 \]
 The triangle inequality now gives us,
 \[
-    L(\textbf{b}) - L(\textbf{a}) \leq \left( 2 \left\Vert \textbf{a} \right\Vert \left\Vert X^T X \right\Vert - 2\left\Vert Y^T X \right\Vert + \left\Vert \textbf{b} - \textbf{a} \right\Vert \left\Vert X^T X \right\Vert \right)\left\Vert \textbf{b} - \textbf{a} \right\Vert
+    \frac{\left\Vert L(\textbf{b}) - L(\textbf{a}) \right\Vert}{\left\Vert \textbf{b} - \textbf{a} \right\Vert} \leq 2 \left\Vert \textbf{a} \right\Vert \left\Vert X^T X \right\Vert - 2\left\Vert Y^T X \right\Vert + \left\Vert \textbf{b} - \textbf{a} \right\Vert \left\Vert X^T X \right\Vert
 \]
 Assuming $\left\Vert \textbf{a} \right\Vert, \left\Vert \textbf{b} \right\Vert \leq K$,
 \[
-    L(\textbf{b}) - L(\textbf{a}) \leq \left( 2K \left\Vert X^T X \right\Vert - 2 \left\Vert Y^T X \right\Vert \right) \left\Vert \textbf{b} - \textbf{a} \right\Vert
+    \frac{\left\Vert L(\textbf{b}) - L(\textbf{a}) \right\Vert}{\left\Vert \textbf{b} - \textbf{a} \right\Vert} \leq 2K \left\Vert X^T X \right\Vert - 2 \left\Vert Y^T X \right\Vert
 \]
 and so we can set the Lipschitz constant to
 \[
@@ -134,13 +137,36 @@ and so we can set the Lipschitz constant to
 \section{Binary cross-entropy function}
 We have,
 \[
-    g(\textbf{w}) = \frac{1}{m}\sum\limits_{i=1}^m -y^{(i)}\log \left( \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) - (1-y^{(i)})\log \left( 1 - \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) 
+    g(\textbf{w}) = \frac{1}{m}\sum\limits_{i=1}^m -y^{(i)}\log h(x^{(i)}) - (1-y^{(i)})\log \left( 1 - h(x^{(i)}) \right) 
 \]
+where $h(x^{(i)}) = \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}}$.
+
+We have,
+\[
+    \begin{aligned}
+        \frac{\partial h(\textbf{x}^{(i)})}{\partial \textbf{w}_j} &= -\frac{e^{-\textbf{w}^T \textbf{x}^{(i)}} \left( -x^{(i)}_j \right)}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \\
+        &= \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}}\cdot \left( 1 - \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}} \right) \cdot x^{(i)}_j \\
+        &= h(\textbf{x}^{(i)}) \left( 1 - h(\textbf{x}^{(i)}) \right)x^{(i)}_j
+    \end{aligned}
+\]
+
 The gradient is then,
 \[
-    \begin{aligned} \frac{\partial}{\partial \textbf{w}_j} g(\textbf{w}) &= \frac{\partial}{\partial \textbf{w}_j} \left( \frac{-1}{m} \sum_{i = 1}^m y^{(i)} \log \left( h(\textbf{x}^{(i)}) \right) + (1 - y^{(i)}) \log \left( 1 - h(\textbf{x}^{(i)}) \right) \right) \\ &= \frac{-1}{m} \sum_{i = 1}^m \left( \frac{y^{(i)}}{h(\textbf{x}^{(i)})}h^{\prime}(\textbf{x}^{(i)}) + \frac{1 - y^{(i)}}{1 - h(\textbf{x}^{(i)})}(-h^{\prime}(\textbf{x}^{(i)})) \right) \\ &= \frac{-1}{m} \sum_{i = 1}^m \left( \frac{y^{(i)}}{h(\textbf{x}^{(i)})} h(\textbf{x}^{(i)})(1 - h(\textbf{x}^{(i)}))(\textbf{x}^{(i)}_j) - \frac{1 - y^{(i)}}{1 - h(\textbf{x}^{(i)})}h(\textbf{x}^{(i)})(1 - h(\textbf{x}^{(i)}))(x^{(i)}_j) \right) \\ &= \frac{-1}{m} \sum_{i = 1}^m \left( y^{(i)}(1 - h(\textbf{x}^{(i)}))(\textbf{x}^{(i)}_j) - (1 - y^{(i)})h(\textbf{x}^{(i)})(x^{(i)}_j) \right) \\ &= \frac{-1}{m} \sum_{i = 1}^m \left( y^{(i)}(1 - h(\textbf{x}^{(i)})) - (1 - y^{(i)})h(\textbf{x}^{(i)}) \right)x^{(i)}_j \\ &= \frac{1}{m} \sum_{i = 1}^m \left( y^{(i)} - y^{(i)}h(\textbf{x}^{(i)}) - h(\textbf{x}^{(i)}) + y^{(i)}h(\textbf{x}^{(i)}) \right)x^{(i)}_j \\ &= \frac{1}{m} \sum_{i = 1}^m \left( h(\textbf{x}^{(i)}) - y^{(i)} \right)x^{(i)}_j \end{aligned}
+    \begin{aligned} \frac{\partial}{\partial \textbf{w}_j} g(\textbf{w}) &= \frac{\partial}{\partial \textbf{w}_j} \left( \frac{-1}{m} \sum_{i = 1}^m y^{(i)} \log \left( h(\textbf{x}^{(i)}) \right) + (1 - y^{(i)}) \log \left( 1 - h(\textbf{x}^{(i)}) \right) \right) \\ 
+    &= \frac{-1}{m} \sum_{i = 1}^m \left( \frac{y^{(i)}}{h(\textbf{x}^{(i)})}h^{\prime}(\textbf{x}^{(i)}) + \frac{1 - y^{(i)}}{1 - h(\textbf{x}^{(i)})}(-h^{\prime}(\textbf{x}^{(i)})) \right) \\ 
+    &= \frac{-1}{m} \sum_{i = 1}^m \left( y^{(i)}(1 - h(\textbf{x}^{(i)}))(\textbf{x}^{(i)}_j) - (1 - y^{(i)})h(\textbf{x}^{(i)})(x^{(i)}_j) \right) \\ 
+    &= \frac{-1}{m} \sum_{i = 1}^m \left( y^{(i)}(1 - h(\textbf{x}^{(i)})) - (1 - y^{(i)})h(\textbf{x}^{(i)}) \right)x^{(i)}_j \\ 
+    &= \frac{1}{m} \sum_{i = 1}^m \left( y^{(i)} - y^{(i)}h(\textbf{x}^{(i)}) - h(\textbf{x}^{(i)}) + y^{(i)}h(\textbf{x}^{(i)}) \right)x^{(i)}_j \\ 
+    &= \frac{1}{m} \sum_{i = 1}^m \left( h(\textbf{x}^{(i)}) - y^{(i)} \right)x^{(i)}_j \end{aligned}
 \]
-where $h(\textbf{x}^{(i)}) = \frac{1}{1+e^{-\textbf{w}^T \textbf{x}^{(i)}}}$. It is trivial to show that the maximum of this occurs when $h(\textbf{x}^{(i)})=\frac{1}{2}$.
+It is trivial to show that the maximum of this occurs when $h(\textbf{x}^{(i)})=\frac{1}{2}$: for any $k$,
+\[
+    \begin{aligned}
+        \frac{\partial}{\partial \textbf{w}_k} \left( h(\textbf{x}^{(i)}) - y^{(i)} \right)x^{(i)}_j &= \frac{\partial}{\partial \textbf{w}_k} h(\textbf{x}^{(i)})x^{(i)}_j \\
+        &= h(\textbf{x}^{(i)})\left(1-h(\textbf{x}^{(i)}) \right)x^{(i)}_k x^{(i)}_j
+    \end{aligned}
+\]
+Within the domain $(-\infty, \infty)$, the first two terms cannot be 0; the last term is a constant, and thus $x^{(i)}_k = 0$, and thus $h(\textbf{x}^{(i)}) = \frac{1}{2}$. Now whether $y^{(i)}$  is 0 or 1, $\lvert h(\textbf{x}^{(i)}) - y^{(i)} \rvert = \frac{1}{2}$.
 
 Thus, the Lipschitz constant is
 \[
@@ -148,48 +174,30 @@ Thus, the Lipschitz constant is
         L = \frac{1}{2m} \left\Vert \textbf{X} \right\Vert
     }
 \]
-\iffalse
-    Remark:
-    \begin{itemize}
-        \item  Learning rate in GD is set to $\frac{1}{L}$ and the descent algorithm should converge assuming that the gradient is Lipschitz continuous
-        \item We redo the calculations by weakening the condition on the gradient of the function i.e. we assume that the function being Lipschitz continuous is sufficient for convergence of the descent algorithm and computation of the learning rate!
-        \item We list the learning rates of standard loss functions
-        \item Matrix Bound: the Lipschitz constant, 
-    \[ 
-        \boxed{
-            L = \frac{1}{m}\left\Vert \textbf{y}^T \textbf{X} \right\Vert
-        }
-    \]
-    is bounded. 
-    %\item $m =$ number of layers
-    \item The learning rate obtained from these computations could serve as good initial guesses and relieves us from initializing a random guess!
-    %the expression on the right hand side could blow up if the vector product is a scalar. This could happen iff the data is 1-d, a trivial case we won't consider since that would render the learning problem irrelevant. 1-d data sets don't require learning rules for discrimination and therefore the entire process would be redundant.
-    \end{itemize}
-\fi
 
-\section{Softmax loss function} 
-The softmax loss is defined as
+\section{Cross-entropy loss function} 
+The cross-entropy loss (or softmax loss) is defined as \footnotetext{This version of the softmax loss assumes the labels are distributed according to a Multinomial distribution. Later, we will show that even when the output is assumed to be one-hot encoded, the Lipschitz constant remains the same.}
 \[
     g(\textbf{w}) = -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k [y^{(i)}=j] \log \left( \frac{e^{\boldsymbol\Theta_j^T \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta_l^T \textbf{x}^{(i)}}} \right)
 \]
 Here, we are using the Iverson notation: the expression $[y^{(i)}=j]$ is 1 if the condition is true, and 0 otherwise. To find the Lipschitz constant, we require the derivative of the softmax function, which is the fraction in the log term.
 \[
-    \begin{aligned} \frac{\partial}{\partial \boldsymbol\Theta_p} \left( \frac{e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \right) &= \frac{\partial}{\partial \boldsymbol\Theta^T_p \textbf{x}^{(i)}} \left( \frac{e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \right) \cdot \frac{\partial}{\partial \boldsymbol\Theta_p} \left( \boldsymbol\Theta^T_p \textbf{x}^{(i)} \right) \\ &= \frac{\frac{\partial}{\partial \boldsymbol\Theta^T_p \textbf{x}^{(i)}} \left( e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}} \right) \sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} - e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}} \frac{\partial}{\partial \boldsymbol\Theta^T_p \textbf{x}^{(i)}} \left( \sum_{l=1}^k e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}\right )}{\left( \sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} \right)^2}  \frac{\partial}{\partial \boldsymbol\Theta^T_p} \left( \boldsymbol\Theta_p^T \textbf{x}^{(i)} \right) \\ &= \frac{[p=j] e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} - e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}} \cdot e^{\boldsymbol\Theta^T_p \textbf{x}^{(i)}} }{\left( \sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} \right)^2} \cdot \textbf{x}^{(i)} \\ &= \left( \frac{[p=j] e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} - \frac{e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \cdot \frac{e^{\boldsymbol\Theta^T_p \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \right) \cdot \textbf{x}^{(i)} \\ &= \left([p=j] s_j - s_j s_p \right) \cdot \textbf{x}^{(i)} \\ &= s_j([p=j]-s_p)\textbf{x}^{(i)} \end{aligned}
+    \begin{aligned} \frac{\partial s_j}{\partial \boldsymbol\Theta_p} &= \frac{\partial}{\partial \boldsymbol\Theta^T_p \textbf{x}^{(i)}} \left( \frac{e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \right) \cdot \frac{\partial}{\partial \boldsymbol\Theta_p} \left( \boldsymbol\Theta^T_p \textbf{x}^{(i)} \right)  \\ &= \frac{[p=j] e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} - e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}} \cdot e^{\boldsymbol\Theta^T_p \textbf{x}^{(i)}} }{\left( \sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}} \right)^2} \cdot \textbf{x}^{(i)} \\ &= \left( \frac{[p=j] e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} - \frac{e^{\boldsymbol\Theta^T_j \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \cdot \frac{e^{\boldsymbol\Theta^T_p \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta^T_l \textbf{x}^{(i)}}} \right) \cdot \textbf{x}^{(i)} \\ &= \left([p=j] s_j - s_j s_p \right) \cdot \textbf{x}^{(i)} \\ &= s_j([p=j]-s_p)\textbf{x}^{(i)} \end{aligned}
 \]
-The first step uses the chain rule for derivatives. The second step applies the quotient rule. The third step is obtained by noting that the partial derivative is taken with respect to $\boldsymbol\Theta_p^T \textbf{x}^{(i)}$. We then simplify, split the fraction into two, and cancel out terms. Finally, we use the notation $s_j$ to denote the softmax function. In a more concise fashion, we write the above result as:
+We use the notation $s_j$ to denote the softmax function. The first step uses the chain rule for derivatives. The second step is obtained by applying the quotient rule and noting that the partial derivative is taken with respect to $\boldsymbol\Theta_p^T \textbf{x}^{(i)}$. We then simplify, split the fraction into two, and cancel out terms. In a more concise fashion, we write the above result as:
 \begin{equation}
-    \frac{\partial}{\partial \boldsymbol\Theta_p} s_j = s_j([p=j]-s_p)\textbf{x}^{(i)} \label{softmax:1}
+    \frac{\partial s_j}{\partial \boldsymbol\Theta_p} = s_j([p=j]-s_p)\textbf{x}^{(i)} \label{softmax:1}
 \end{equation}
 We can now use \eqref{softmax:1} to find the gradient of $g$.
 \[
     \begin{aligned}
-        \nabla_{\boldsymbol\Theta_p} g &= -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k \nabla_{\boldsymbol\Theta_p} [y^{(i)}=j]\log s_j \\
-        &= -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k \frac{[y^{(i)}=j]}{s_j} \nabla_{\boldsymbol\Theta_p} s_j \\
-        &= -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=p} [y^{(i)}=j] (1-s_p)\textbf{x}^{(i)} - \frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j \neq p} [y^{(i)}=j](-s_p)\textbf{x}^{(i)} \\
-        &= -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=p} [y^{(i)}=j]\textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=p} [y^{(i)}=j]s_p \textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j \neq p} [y^{(i)}=j]s_p \textbf{x}^{(i)} \\
-        &= -\frac{1}{m} \sum\limits_{i=1}^m [y^{(i)}=p]\textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m [y^{(i)}=p]s_p \textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m [y^{(i)} \neq p] s_p \textbf{x}^{(i)} \\
-        &= -\frac{1}{m} \sum\limits_{i=1}^m [y^{(i)}=p]\textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m s_p \textbf{x}^{(i)} \left( [y^{(i)}=p] + [y^{(i)} \neq p] \right) \\
-        &= -\frac{1}{m} \sum\limits_{i=1}^m [y^{(i)}=p]\textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m s_p \textbf{x}^{(i)}
+        \nabla_{\boldsymbol\Theta_p} g =& -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k \nabla_{\boldsymbol\Theta_p} [y^{(i)}=j]\log s_j \\
+        =& -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k \frac{[y^{(i)}=j]}{s_j} \nabla_{\boldsymbol\Theta_p} s_j \\
+        =& -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=p} [y^{(i)}=j] (1-s_p)\textbf{x}^{(i)} - \frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j \neq p} [y^{(i)}=j](-s_p)\textbf{x}^{(i)} \\
+        =& -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=p} [y^{(i)}=j]\textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=p} [y^{(i)}=j]s_p \textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j \neq p} [y^{(i)}=j]s_p \textbf{x}^{(i)} \\
+        =& -\frac{1}{m} \sum\limits_{i=1}^m [y^{(i)}=p]\textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m [y^{(i)}=p]s_p \textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m [y^{(i)} \neq p] s_p \textbf{x}^{(i)} \\
+        =& -\frac{1}{m} \sum\limits_{i=1}^m [y^{(i)}=p]\textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m s_p \textbf{x}^{(i)} \left( [y^{(i)}=p] + [y^{(i)} \neq p] \right) \\
+        =& -\frac{1}{m} \sum\limits_{i=1}^m [y^{(i)}=p]\textbf{x}^{(i)} + \frac{1}{m} \sum\limits_{i=1}^m s_p \textbf{x}^{(i)}
     \end{aligned}
 \]
 Thus,
@@ -243,6 +251,8 @@ This section discusses experiments demonstrating the faster convergence with our
 
 In each experiment, we randomly initialize weights, and use the same initial weight vector for gradient descent with both the learning rates. In all experiments, we scale each feature to sum to 1 before running gradient descent. This scaled data is used to compute the Lipschitz constants, and consequently, the learning rates. Normalizing the data is particularly important because the Lipschitz constant may get arbitrarily large, thus making the learning rate too small.
 
+Note that the results below are obtained from simple, computationally inexpensive models: the regression experiments use a multiple linear regression model, the binary classification experiments use an ordinary logistic regression model, and the multi-class classification experiments use a softmax regression model with one-hot encoded target labels. For MNIST, however, we found it quicker to train a neural network with only an input and output layer (no hidden layers were used), a stochastic gradient descent optimizer, and softmax activations.
+
 \begin{figure}
     \centering
     \includegraphics[scale=0.5]{cali.png}
@@ -276,7 +286,7 @@ In the above formulas, the notation $x^{(i)}_j$ refers to the $j$th column of th
         Energy efficiency \cite{tsanas2012accurate} & 100 & 12.78 & 489,592 & 3,833 \\
         Online news popularity \cite{fernandes2015proactive} & 73,355,000 & 1.462 & 10,985 & 753 \\
         \bottomrule
-    \end{tabularx}
+     \end{tabularx}
     \label{tab:leastsq:1}
 \end{table}
 
@@ -285,7 +295,7 @@ Table \ref{tab:leastsq:1} shows the results of our experiments on some datasets.
 While the high learning rates may raise concerns of oscillations rather than convergence, we have checked for this in our experiments. To do this, we continued running gradient descent, monitoring the value of the loss function every 500 iterations. Figure \ref{fig:leastsq:1} shows this plot, demonstrating that the high learning rates indeed lead to convergence.
 
 \subsection{Binary classification experiments}
-For classification, our experiments were conducted by running gradient descent for 1000 iterations, and then comparing accuracy scores over the two learning rates. Table \ref{tab:classif:1} summarizes the results of these experiments. Note that even with high learning rates, the algorithm outperforms a small choice of learning rate.
+For classification, our experiments were conducted by running gradient descent for 1000 iterations, and then comparing accuracy scores over the two learning rates. Table \ref{tab:classif:1} summarizes the results of these experiments. Note that even with high learning rates, the algorithm outperforms a small choice of learning rate. We also ran experiments in the same manner as we did for regression: we set a reasonable error threshold and compared the number of iterations required across both learning rates. Table \ref{tab:classif:3} summarizes the results of these experiments. Note that the learning rate we obtained for the covertype data is different because we restricted the data to the first 100K rows only.
 
 For the iris dataset, we removed one class to make the problem a binary classification one. For the covertype data, we considered only the first two out of seven classes. This resulted in 495,141 rows. We also considered only ten features to speed up computation time.
 
@@ -316,19 +326,69 @@ For multi-class classification, the experiments were conducted in the same manne
         \midrule
         Iris & 1.936 & 93.33\% & 97.78\% \\
         Digits & 0.635 & 91.3\% & 94.63\% \\
-        MNIST\footnotemark & 10.24 & 92.59\% & 92.33\% \\
         \bottomrule
     \end{tabularx}
     \label{tab:classif:2}
 \end{table}
 
-\footnotetext{For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first.}
+\begin{table}
+    \caption{Classification experiments on various datasets with an error threshold}
+    \centering
+    \begin{tabularx}{\textwidth}{ccYYY}
+        \toprule
+        Dataset & Loss threshold & Inverse Lipschitz constant & \#it with $\alpha=0.1$ & \#it with $\alpha=\frac{1}{L}$ \\
+        \midrule
+        Breast cancer & 0.69 & 4280.23 & 37,008 & 2 \\
+        Covertype & 0.69314 & 17.48M & 216,412 & 2 \\
+        Iris & 0.2 & 1.902 & 413 & 49 \\
+        Digits & 0.2 & 0.634 & 337 & 2 \\
+        \bottomrule
+    \end{tabularx}
+    \label{tab:classif:3}
+\end{table}
+
+\subsubsection{MNIST}
+For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first. Further, we compared the training and validation accuracy scores across both the learning rates.
+
+Figure \ref{fig:classif:1} shows a comparative plot of the training and validation accuracy scores for both learning rates. In both the plots, the red line is for $\alpha = 0.1$, while the green line is for $\alpha = \frac{1}{L}$. Although our choice of learning rate starts off worse, it quickly (< 100 iterations) outperforms a learning rate of 0.1. 
+
+Fig \ref{fig:classif:2} shows the training and validation accuracy scores for the same learning rates. In this figure, the y-axis is shared for easy comparison. With the higher learning rate of 10.24, our model shows a greater overfitting tendency. However, neither of these models used any regularization, and this tendency will reduce on including a regularization term in the loss function.
+
+Finally, Table \ref{tab:classif:4} shows the number of iterations required to reach certain accuracy thresholds with each learning rate.
+
+\begin{table}
+    \caption{Iterations required to reach accuracy thresholds in MNIST experiments}
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        Accuracy threshold & \# it with $\alpha=0.1$ & \# it with $\alpha=\frac{1}{L}$ \\
+        \midrule
+        92.5\% & 11 & 33 \\
+        92.6\% & 22 & 58 \\
+        92.7\% & 22 & 63 \\
+        92.8\% & -- & 173 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:classif:4}
+\end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{mnist_acc.png}
+    \caption{Comparison of training and validation accuracy scores for different $\alpha$}
+    \label{fig:classif:1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.5]{mnist_train_val.png}
+    \caption{Comparison of training and validation accuracy scores for same $\alpha$}
+    \label{fig:classif:2}
+\end{figure}
 
 \begin{itemize}
-    \item for classification, also perform experiments like regression
     \item check if this softmax derivation applies to one-hot encoding as well
-    \item Try not fixing no. of iterations--let LC do the trick!
-    \item set MSE threshold and compare no.of iterations--I need much better accuracy
+    \item report class-wise accuracy and other performance metrics
 \end{itemize}
 
 \section{Conclusion and Future Work}

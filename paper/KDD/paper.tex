@@ -4,9 +4,7 @@
 % defining the \BibTeX command - from Oren Patashnik's original BibTeX documentation.
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08emT\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
-\usepackage{tabularx}
 \usepackage{graphicx}
-\newcolumntype{Y}{>{\centering\arraybackslash}X}
 \renewcommand{\arraystretch}{1.3}
     
 % Rights management information. 
@@ -231,8 +229,8 @@ Thus, the Lipschitz constant is
     }
 \]
 
-\section{Softmax loss function} 
-The softmax loss is defined as
+\section{Cross-entropy loss function} 
+The cross-entropy loss (or softmax loss) is defined as \footnotetext{This version of the softmax loss assumes the labels are distributed according to a Multinomial distribution. Later, we will show that even when the output is assumed to be one-hot encoded, the Lipschitz constant remains the same.}
 \[
     g(\textbf{w}) = -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k [y^{(i)}=j] \log \left( \frac{e^{\boldsymbol\Theta_j^T \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta_l^T \textbf{x}^{(i)}}} \right)
 \]
@@ -386,13 +384,10 @@ For multi-class classification, the experiments were conducted in the same manne
         \midrule
         Iris & 1.936 & 93.33\% & 97.78\% \\
         Digits & 0.635 & 91.3\% & 94.63\% \\
-        MNIST\footnotemark & 10.24 & 92.59\% & 92.33\% \\
         \bottomrule
     \end{tabular}
     \label{tab:classif:2}
 \end{table*}
-
-\footnotetext{For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first.}
 
 \begin{table*}
     \caption{Classification experiments on various datasets with an error threshold}
@@ -412,11 +407,47 @@ For multi-class classification, the experiments were conducted in the same manne
 
 \footnotetext{The learning rate obtained here is different because we restricted the data to the first 100K rows only.}
 
+\subsubsection{MNIST}
+For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first. Further, we compared the training and validation accuracy scores across both the learning rates.
+
+Figure \ref{fig:classif:1} shows a comparative plot of the training and validation accuracy scores for both learning rates. In both the plots, the red line is for $\alpha = 0.1$, while the green line is for $\alpha = \frac{1}{L}$. Although our choice of learning rate starts off worse, it quickly (< 100 iterations) outperforms a learning rate of 0.1. 
+
+Fig \ref{fig:classif:2} shows the training and validation accuracy scores for the same learning rates. In this figure, the y-axis is shared for easy comparison. With the higher learning rate of 10.24, our model shows a greater overfitting tendency. However, neither of these models used any regularization, and this tendency will reduce on including a regularization term in the loss function.
+
+Finally, Table \ref{tab:classif:4} shows the number of iterations required to reach certain accuracy thresholds with each learning rate.
+
+\begin{table}
+    \caption{Iterations required to reach accuracy thresholds in MNIST experiments}
+    \centering
+    \begin{tabular}{ccc}
+        \toprule
+        Accuracy threshold & \# it with $\alpha=0.1$ & \# it with $\alpha=\frac{1}{L}$ \\
+        \midrule
+        92.5\% & 11 & 33 \\
+        92.6\% & 22 & 58 \\
+        92.7\% & 22 & 63 \\
+        92.8\% & -- & 173 \\
+        \bottomrule
+    \end{tabular}
+    \label{tab:classif:4}
+\end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.33]{mnist_acc.png}
+    \caption{Comparison of training and validation accuracy scores for different $\alpha$}
+    \label{fig:classif:1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.33]{mnist_train_val.png}
+    \caption{Comparison of training and validation accuracy scores for same $\alpha$}
+    \label{fig:classif:2}
+\end{figure}
+
 \begin{itemize}
-    \item for classification, also perform experiments like regression
     \item check if this softmax derivation applies to one-hot encoding as well
-    \item Try not fixing no. of iterations--let LC do the trick!
-    \item set MSE threshold and compare no.of iterations--I need much better accuracy
     \item report class-wise accuracy and other performance metrics
 \end{itemize}
 
