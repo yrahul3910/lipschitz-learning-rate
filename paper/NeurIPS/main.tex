@@ -176,7 +176,7 @@ Thus, the Lipschitz constant is
 \]
 
 \section{Cross-entropy loss function} 
-The cross-entropy loss (or softmax loss) is defined as \footnotetext{This version of the softmax loss assumes the labels are distributed according to a Multinomial distribution. Later, we will show that even when the output is assumed to be one-hot encoded, the Lipschitz constant remains the same.}
+The cross-entropy loss (or softmax loss) is defined as \footnotetext{This version of the softmax loss assumes the labels are distributed according to a Multinomial distribution. This is equivalent to assuming a one-hot encoded target and using $\sum_i \sum_j y^{(i)}_j \log s_j$, because the effect of the latter is to only consider the ``hot" softmax value, while the former achieves that using the Iverson notation instead of explicitly one-hot encoding the target.}
 \[
     g(\textbf{w}) = -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k [y^{(i)}=j] \log \left( \frac{e^{\boldsymbol\Theta_j^T \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta_l^T \textbf{x}^{(i)}}} \right)
 \]

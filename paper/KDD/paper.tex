@@ -1,13 +1,27 @@
-\documentclass[sigconf,anonymous]{acmart}
+\documentclass[sigconf,authordraft]{acmart}
 % \documentclass[sigconf,screen|anonymous|authorVersion]{acmart}
 
 % defining the \BibTeX command - from Oren Patashnik's original BibTeX documentation.
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08emT\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{url}
+
+\definecolor{backcolour}{rgb}{0.9568, 0.9608, 0.9725}
+
+\lstset{
+    backgroundcolor=\color{backcolour},
+    language=Python,
+    breaklines=true,
+    keepspaces=false
+}
+
 \renewcommand{\arraystretch}{1.3}
     
-% Rights management information. 
+% TODO: Rights management information. 
 % This information is sent to you when you complete the rights form.
 % These commands have SAMPLE values in them; it is your responsibility as an author to replace
 % the commands and values with those provided to you when you complete the rights form.
@@ -30,7 +44,7 @@
 %\acmDOI{10.1145/1122445.1122456}
 
 %
-% Submission ID. 
+% TODO: Submission ID. 
 % Use this when submitting an article to a sponsored event. You'll receive a unique submission ID from the organizers
 % of the event, and this ID should be used as the parameter to this command.
 %\acmSubmissionID{123-A56-BU3}
@@ -64,14 +78,14 @@
 %
 % The abstract is a short summary of the work to be presented in the article.
 \begin{abstract}
-Finding an optimal learning rate in gradient descent has typically been an empirical process. We attempt to mathematically compute an optimal value for the learning rate by exploiting functional properties of the loss function. By making only minimal assumptions about the functions, we argue that the inverse of the Lipschitz constant is this optimal value, and empirically show that this is indeed the case.
+Finding an optimal learning rate in gradient descent has typically been an empirical process. We provide elegant mathematical proofs to compute an optimal value for the learning rate by exploiting functional properties of the loss function. By making minimal assumptions about the functions and possibly using the most simple architecture, we argue that the inverse of the Lipschitz constant is this optimal value. Experimental results show that this is indeed the case.
 \end{abstract}
 
- \begin{CCSXML}
+  \begin{CCSXML}
 <ccs2012>
 <concept>
-<concept_id>10010147.10010257.10010321</concept_id>
-<concept_desc>Computing methodologies~Machine learning algorithms</concept_desc>
+<concept_id>10002950.10003714.10003736</concept_id>
+<concept_desc>Mathematics of computing~Functional analysis</concept_desc>
 <concept_significance>500</concept_significance>
 </concept>
 <concept>
@@ -79,17 +93,29 @@ Finding an optimal learning rate in gradient descent has typically been an empir
 <concept_desc>Mathematics of computing~Convex optimization</concept_desc>
 <concept_significance>300</concept_significance>
 </concept>
+<concept>
+<concept_id>10002950.10003741.10003746</concept_id>
+<concept_desc>Mathematics of computing~Continuous functions</concept_desc>
+<concept_significance>100</concept_significance>
+</concept>
+<concept>
+<concept_id>10010147.10010257.10010282.10010283</concept_id>
+<concept_desc>Computing methodologies~Batch learning</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
 </ccs2012>
 \end{CCSXML}
 
-\ccsdesc[500]{Computing methodologies~Machine learning approaches}
+\ccsdesc[500]{Mathematics of computing~Functional analysis}
 \ccsdesc[300]{Mathematics of computing~Convex optimization}
+\ccsdesc[100]{Mathematics of computing~Continuous functions}
+\ccsdesc[300]{Computing methodologies~Batch learning}
 
 \keywords{gradient descent, Lipschitz constant, regression, classification, learning rate, machine learning}
 \maketitle
 
 \section{Introduction}
-Gradient descent is a popular optimization algorithm for finding optima for functions, and is used to find optima in loss functions in machine learning tasks. In an iterative process, it seeks to update randomly initialized weights to minimize the training error. These updates are typically small values proportional to the gradient of the loss function. The constant of proportionality is called the learning rate, and is usually manually chosen.
+Gradient descent\cite{cauchy1847methode} is a popular optimization algorithm for finding optima for functions, and is used to find optima in loss functions in machine learning tasks. In an iterative process, it seeks to update randomly initialized weights to minimize the training error. These updates are typically small values proportional to the gradient of the loss function. The constant of proportionality is called the learning rate, and is usually manually chosen.
 
 The gradient descent update rule is given by
 \[
@@ -117,8 +143,16 @@ In this paper, we use $\max |\nabla_{\textbf{w}} f|$ to derive the Lipschitz con
 
 By setting $\alpha = \frac{1}{L}$, we have $\Delta \textbf{w} \leq 1$, constraining the change in the weights. This makes it optimal to set the learning rate to the reciprocal of the Lipschitz constant. The following sections show the derivation for the Lipschitz constants for various loss functions. The derived constants are in terms of the data, which is a constant with respect to the weight vector.
 
+The rest of the paper is structured as follows. Section 2 discusses related work in gradient descent and its variants. Sections 3 to 5 show the derivation of the Lipschitz constants for some commonly used loss functions. Section 6 discusses the effect of regularization terms on the Lipschitz constant. Finally, Section 7 shows experiments on public datasets empirically demonstrating the efficacy of our method.
+
 % displaymath environment for unnumbered equations
-% must use \Description in figures
+
+\section{Related Work}
+The generalization ability of stochastic gradient descent (SGD) and various methods of faster optimization have quickly gained interest in machine learning and deep learning communities. 
+
+Several directions have been taken to understand these phenomena. The interest in the stability of SGD is one such direction\cite{kuzborskij2017data}\cite{hardt2015train}. Others have proven that gradient descent can find the global minima of the loss functions in over-parameterized deep neural networks\cite{zou2018stochastic}\cite{du2018gradient}. 
+
+More practical approaches in this regard have involved novel changes to the optimization procedure itself. These include adding a ``momentum" term to the update rule \cite{sutskever2013importance}, and ``adaptive gradient" methods such as RMSProp\cite{tieleman2012lecture}, and Adam\cite{kingma2014adam}, which combines RMSProp and AdaGrad\cite{duchi2011adaptive}. These methods have seen widespread use in deep neural networks\cite{radford2015unsupervised}\cite{xu2015show}\cite{bahar2017empirical},  Other methods rely on an approximation of the Hessian. These include the Broyden-Fletcher-Goldfarb-Shanno (BFGS) \cite{broyden1970convergence}\cite{fletcher1970new}\cite{goldfarb1970family}\cite{shanno1970conditioning} and L-BFGS\cite{liu1989limited} algorithms. However, our proposed method does not require any modification of the standard gradient descent update rule, and relies on a fixed value of the learning rate. Further, we only use the first gradient, thus requiring functions to be only once differentiable and L-Lipschitz.
 
 \section{Least squares cost function} \label{lstsq}
 We have,
@@ -220,7 +254,7 @@ It is trivial to show that the maximum of this occurs when $h(\textbf{x}^{(i)})=
         &= h(\textbf{x}^{(i)})\left(1-h(\textbf{x}^{(i)}) \right)x^{(i)}_k x^{(i)}_j
     \end{aligned}
 \]
-Within the domain $(-\infty, \infty)$, the first two terms cannot be 0; the last term is a constant, and thus $x^{(i)}_k = 0$, and thus $h(\textbf{x}^{(i)}) = \frac{1}{2}$. Now whether $y^{(i)}$  is 0 or 1, $\lvert h(\textbf{x}^{(i)}) - y^{(i)} \rvert = \frac{1}{2}$.
+Within the domain $(-\infty, \infty)$, the first two terms cannot be 0; the last term is a constant, leaving $x^{(i)}_k = 0$, and thus $h(\textbf{x}^{(i)}) = \frac{1}{2}$. Now whether $y^{(i)}$  is 0 or 1, $\lvert h(\textbf{x}^{(i)}) - y^{(i)} \rvert = \frac{1}{2}$.
 
 Thus, the Lipschitz constant is
 \[
@@ -230,7 +264,7 @@ Thus, the Lipschitz constant is
 \]
 
 \section{Cross-entropy loss function} 
-The cross-entropy loss (or softmax loss) is defined as \footnotetext{This version of the softmax loss assumes the labels are distributed according to a Multinomial distribution. Later, we will show that even when the output is assumed to be one-hot encoded, the Lipschitz constant remains the same.}
+The cross-entropy loss (or softmax loss) is defined as\cite{ng2000cs229} \footnote{This version of the softmax loss assumes the labels are distributed according to a Multinomial distribution. This is equivalent to assuming a one-hot encoded target and using $\sum_i \sum_j y^{(i)}_j \log s_j$, because the effect of the latter is to only consider the ``hot" softmax value, while the former achieves that using the Iverson notation instead of explicitly one-hot encoding the target.}
 \[
     g(\textbf{w}) = -\frac{1}{m} \sum\limits_{i=1}^m \sum\limits_{j=1}^k [y^{(i)}=j] \log \left( \frac{e^{\boldsymbol\Theta_j^T \textbf{x}^{(i)}}}{\sum_{l=1}^k e^{\boldsymbol\Theta_l^T \textbf{x}^{(i)}}} \right)
 \]
@@ -302,19 +336,20 @@ Now by the assumption that $\textbf{w}_1, \textbf{w}_2$ are bounded by $K$,
     }
 \]
 
-This additional term may be added to the Lipschitz constants derived above when gradient descent is performed on a loss function including a Tikhonov regularization term. Clearly, for an $L_2$-regularizer, since $\boldsymbol\Gamma = \frac{\lambda}{2}\textbf{I}$, $L = \lambda K$.
+This additional term may be added to the Lipschitz constants derived above when gradient descent is performed on a loss function including a Tikhonov regularization term. Clearly, for an $L_2$-regularizer, since $\boldsymbol\Gamma = \frac{\lambda}{2}\textbf{I}$, $L = \lambda K$. For example, if an $L_2$ regularization term is included in the least-squares cost function, the Lipschitz constant now becomes $L = \frac{K}{m}\left\Vert X^T X \right\Vert - \frac{1}{m} \left\Vert Y^T X \right\Vert + \lambda K$
 
 \section{Experiments}
 This section discusses experiments demonstrating the faster convergence with our approach. 
 
 In each experiment, we randomly initialize weights, and use the same initial weight vector for gradient descent with both the learning rates. In all experiments, we scale each feature to sum to 1 before running gradient descent. This scaled data is used to compute the Lipschitz constants, and consequently, the learning rates. Normalizing the data is particularly important because the Lipschitz constant may get arbitrarily large, thus making the learning rate too small.
 
-Note that the results below are obtained from simple, computationally inexpensive models: the regression experiments use a multiple linear regression model, the binary classification experiments use an ordinary logistic regression model, and the multi-class classification experiments use a softmax regression model with one-hot encoded target labels. For MNIST, however, we found it quicker to train a neural network with only an input and output layer (no hidden layers were used), a stochastic gradient descent optimizer, and softmax activations.
+Note that the results below are obtained from simple, computationally inexpensive models. The regression experiments use a multiple linear regression model, the binary classification experiments use an ordinary logistic regression model, and the multi-class classification experiments use a softmax regression model with one-hot encoded target labels. For MNIST, however, we found it quicker to train a neural network with only an input and output layer (no hidden layers were used), a stochastic gradient descent optimizer, and softmax activations.
 
 \begin{figure}
     \centering
     \includegraphics[scale=0.5]{cali.png}
     \caption{Loss function over iterations for California housing prices dataset}
+    \Description{A downward curved graph of the loss function over the number of iterations on the California housing prices data set.}
     \label{fig:leastsq:1}
 \end{figure}
 
@@ -408,7 +443,7 @@ For multi-class classification, the experiments were conducted in the same manne
 \footnotetext{The learning rate obtained here is different because we restricted the data to the first 100K rows only.}
 
 \subsubsection{MNIST}
-For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data first. Further, we compared the training and validation accuracy scores across both the learning rates.
+For MNIST, we handled the data differently. Because running gradient descent caused overflows even for learning rates of $10^{-4}$, we standardized the data using sklearn\cite{scikit-learn} first. Further, we compared the training and validation accuracy scores across both the learning rates.
 
 Figure \ref{fig:classif:1} shows a comparative plot of the training and validation accuracy scores for both learning rates. In both the plots, the red line is for $\alpha = 0.1$, while the green line is for $\alpha = \frac{1}{L}$. Although our choice of learning rate starts off worse, it quickly (< 100 iterations) outperforms a learning rate of 0.1. 
 
@@ -435,26 +470,23 @@ Finally, Table \ref{tab:classif:4} shows the number of iterations required to re
 \begin{figure}
     \centering
     \includegraphics[scale=0.33]{mnist_acc.png}
-    \caption{Comparison of training and validation accuracy scores for different $\alpha$}
+    \caption{Comparison of training and validation accuracy scores for different $\alpha$ on MNIST}
+    \Description{Two side-by-side graphs, showing the training and validation accuracies respectively, for both the learning rates.}
     \label{fig:classif:1}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[scale=0.33]{mnist_train_val.png}
-    \caption{Comparison of training and validation accuracy scores for same $\alpha$}
+    \caption{Comparison of training and validation accuracy scores for same $\alpha$ on MNIST}
+    \Description{Two side-by-side graphs, showing the accuracy scores for each learning rate. Each graph shows the training and validation accuracy scores for that learning rate.}
     \label{fig:classif:2}
 \end{figure}
-
-\begin{itemize}
-    \item check if this softmax derivation applies to one-hot encoding as well
-    \item report class-wise accuracy and other performance metrics
-\end{itemize}
 
 \section{Conclusion and Future Work}
 Our major contribution in this paper is the presentation of a novel framework for automatically choosing a suitable learning rate in gradient descent. We then derived the formulas for some common loss functions. This is equally applicable, of course, to both batch and stochastic gradient descent. Our experiments confirmed that our choice of learning rate indeed leads to significantly faster convergence, as predicted by the theory.
 
-Future work in this direction is two-fold. First, we need to investigate the utility of a similar approach in the Broyden–Fletcher–Goldfarb–Shanno (BFGS)\cite{broyden1970convergence}\cite{fletcher1970new}\cite{goldfarb1970family}\cite{shanno1970conditioning} optimization algorithm, which uses an approximation of the Hessian matrix. In BFGS, a suitable step size is chosen via line search; however, this is computationally expensive. Identifying a more direct approach to this would be considerably beneficial.
+Future work in this direction is two-fold. First, we need to investigate the utility of a similar approach in the Broyden-Fletcher-Goldfarb-Shanno (BFGS) optimization algorithm, which uses an approximation of the Hessian matrix. In BFGS, a suitable step size is chosen via line search; however, this is computationally expensive. Identifying a more direct approach to this would be considerably beneficial.
 
 Second, this work discussed, in section \ref{regexpts}, a set of equations for computing an approximation to $K$. In our experiments, the approximation was quite close to the value of $\left\Vert \textbf{w} \right\Vert$ obtained after running gradient descent. In applications where time and/or resources are limited, an approximation to the weight vector may be sufficient. Mathematically, the equation $\left\Vert \textbf{w} \right\Vert = K$ represents an n-ball. Therefore, it may suffice to only search the surface of this n-ball, rather than the entire n-dimensional space via gradient descent. The optimization objective, therefore, is
 \[
@@ -470,4 +502,44 @@ Alternatively, the surface of the n-ball could be used to initialize weights--ra
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{citations}
 
+\appendix
+
+\section{Additional Experiment Results}
+Figure \ref{fig:1:a} and \ref{fig:1:b} show the precision, recall, and F1-scores for different learning rates on the digits data after 200 iterations. Clearly, our choice of learning rate shows an improvement across all classes. We noticed this trend across all the datasets that we ran our experiments on.
+
+\begin{figure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[scale=0.6]{lr_01_report.png}
+        \caption{$\alpha=0.1$}
+        \label{fig:1:a}
+    \end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \includegraphics[scale=0.6]{lr_inv_report.png}
+        \caption{$\alpha=1/L$}
+        \label{fig:1:b}
+    \end{subfigure}
+    
+    \caption{Precision, recall, and F1-scores for different learning rates on the digits data}
+    \Description{Two screen caputres, showing the precision, recall, and F1-scores tabulated class-wise for each learning rate.}
+    \label{fig:1}
+\end{figure}
+
+\section{Code Snippets}
+\subsection{Regression experiments}
+Our regression experiments were performed with a slightly modified gradient descent function that ran until the specified cost was below a parameter \texttt{epsilon}. The function below runs an experiment.
+\lstinputlisting[language=Python]{code/reg_exp.py}
+
+\subsection{Classification experiments}
+Our binary classification experiments were performed in a similar manner as the regression experiments, only changing the computation of the Lipschitz constant and the cost. The code for implementing softmax regression used a one-hot encoding and was taken from GitHub\cite{softmax}. Below is the set of helper functions to run the code.
+\lstinputlisting[language=Python]{code/softmax.py}
+The main loop is shown below.
+\lstinputlisting[language=Python]{code/softmax_main.py}
+
+\subsection{MNIST}
+The data pre-processing for the MNIST data used the below code:
+\lstinputlisting[language=Python]{code/mnist_pre.py}
+The model itself was implemented using Keras:
+\lstinputlisting[language=Python]{code/mnist_model.py}
 \end{document}
